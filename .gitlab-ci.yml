@@ -35,8 +35,7 @@ build:
     - apk add --no-cache bash
     - docker info || sleep 5 && docker info
     # fetch dockerfile
-    - ./set-branch-name.sh && export BRANCH_NAME=$(cat branch_name) && echo ${BRANCH_NAME}
-    - git clone -b ${BRANCH_NAME} --depth=1 https://github.com/ipfs/go-ipfs.git
+    - git clone -b ${CI_COMMIT_TAG} --depth=1 https://github.com/ipfs/go-ipfs.git
     - cd ./go-ipfs
     # build
     - sed -i 's/golang\:/arm32v7\/golang\:/' ./Dockerfile && sed -i 's/busybox\:/arm32v7\/busybox\:/' ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i 's/VERSION\/tini/VERSION\/tini-armhf/' ./Dockerfile
