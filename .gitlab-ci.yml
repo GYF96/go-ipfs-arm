@@ -1,6 +1,3 @@
-variables:
-  BASENAME: go-ipfs-arm32v7
-
 stages:
   - check
   - build
@@ -21,30 +18,48 @@ check:
     - git fetch --tags && ./check-version.sh && ./create-tags.sh
     - git push --tags https://${GITLAB_USER_LOGIN}:${PERSONAL_ACCESS_TOKEN}@git.yrzr.ocry.com/docker/go-ipfs-armhf.git
 
-build:
-  image: yrzr/docker-arm32v7:stable-dind-git
+.build_stage: &build_stage
   stage: build
   tags:
-    - armhf
     - docker
   only:
     - tags
   script:
     # setup dockerd
     - /usr/local/bin/dockerd-entrypoint.sh &
-    - apk add --no-cache bash
+    - apk add --no-cache bash git
     - docker info || sleep 5 && docker info
     # fetch dockerfile
     - git clone -b ${CI_COMMIT_TAG} --depth=1 https://github.com/ipfs/go-ipfs.git
     - cd ./go-ipfs
     # build
-    - sed -i 's/golang\:/arm32v7\/golang\:/' ./Dockerfile && sed -i 's/busybox\:/arm32v7\/busybox\:/' ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i 's/VERSION\/tini/VERSION\/tini-armhf/' ./Dockerfile
+    - sed -i "s/golang\:/${BASE_NS}\/golang\:/" ./Dockerfile && sed -i 's/busybox\:/${BASE_NS}\/busybox\:/' ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
     - docker build -q -t ${DOCKER_NS}/${BASENAME}:${CI_COMMIT_TAG} -f ./Dockerfile ./
     # latest tag
     - cd ../ && git fetch --tags && ./latest-tag.sh
     # docker push
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD 
     - docker images && docker push ${DOCKER_NS}/${BASENAME}
+
+build-armv7:
+  <<: *build_stage
+  image: yrzr/docker-arm32v7:stable-dind
+  tags:
+    - armhf
+  variables:
+    ARCH_NAME: armhf
+    BASE_NS: arm32v7
+    BASENAME:  go-ipfs-arm32v7
+
+build-armv8:
+  <<: *build_stage
+ image: arm64v8/docker:stable-dind
+ tags:
+    - aarch64
+  variables:
+    ARCH_NAME: arm64
+    BASE_NS: arm64v8
+    BASENAME: go-ipfs-arm64v8
 
 mirror:
   image: yrzr/docker-arm32v7:stable-git
