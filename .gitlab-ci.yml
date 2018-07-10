@@ -49,12 +49,12 @@ build-armv7:
   variables:
     ARCH_NAME: armhf
     BASE_NS: arm32v7
-    BASENAME:  go-ipfs-arm32v7
+    BASENAME: go-ipfs-arm32v7
 
 build-armv8:
   <<: *build_stage
- image: arm64v8/docker:stable-dind
- tags:
+  image: arm64v8/docker:stable-dind
+  tags:
     - aarch64
   variables:
     ARCH_NAME: arm64
