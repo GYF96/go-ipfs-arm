@@ -20,8 +20,6 @@ check:
 
 .build_stage: &build_stage
   stage: build
-  tags:
-    - docker
   only:
     - tags
   script:
@@ -33,7 +31,7 @@ check:
     - git clone -b ${CI_COMMIT_TAG} --depth=1 https://github.com/ipfs/go-ipfs.git
     - cd ./go-ipfs
     # build
-    - sed -i "s/golang\:/${BASE_NS}\/golang\:/" ./Dockerfile && sed -i 's/busybox\:/${BASE_NS}\/busybox\:/' ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
+    - sed -i "s/golang\:/${BASE_NS}\/golang\:/" ./Dockerfile && sed -i "s/busybox\:/${BASE_NS}\/busybox\:/" ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
     - docker build -q -t ${DOCKER_NS}/${BASENAME}:${CI_COMMIT_TAG} -f ./Dockerfile ./
     # latest tag
     - cd ../ && git fetch --tags && ./latest-tag.sh
@@ -46,6 +44,7 @@ build-armv7:
   image: yrzr/docker-arm32v7:stable-dind
   tags:
     - armhf
+    - docker
   variables:
     ARCH_NAME: armhf
     BASE_NS: arm32v7
@@ -56,6 +55,7 @@ build-armv8:
   image: arm64v8/docker:stable-dind
   tags:
     - aarch64
+    - docker
   variables:
     ARCH_NAME: arm64
     BASE_NS: arm64v8
