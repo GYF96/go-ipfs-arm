@@ -50,16 +50,16 @@ build-armv7:
     BASE_NS: arm32v7
     BASENAME: go-ipfs-arm32v7
 
-build-armv8:
-  <<: *build_stage
-  image: arm64v8/docker:stable-dind
-  tags:
-    - aarch64
-    - docker
-  variables:
-    ARCH_NAME: arm64
-    BASE_NS: arm64v8
-    BASENAME: go-ipfs-arm64v8
+# build-armv8:
+#   <<: *build_stage
+#   image: arm64v8/docker:stable-dind
+#   tags:
+#     - aarch64
+#     - docker
+#   variables:
+#     ARCH_NAME: arm64
+#     BASE_NS: arm64v8
+#     BASENAME: go-ipfs-arm64v8
 
 mirror:
   image: yrzr/docker-arm32v7:stable-git
