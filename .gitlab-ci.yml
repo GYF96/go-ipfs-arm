@@ -19,7 +19,7 @@ check:
     - git config --global user.email $GIT_USER_EMAIL && git config --global user.name $GIT_USER_NAME
     - mkdir -p ~/.ssh && echo "$GITLAB_SSH_PRIV_KEY" > ~/.ssh/id_rsa && ssh-keyscan -H git.yrzr.ocry.com > ~/.ssh/known_hosts && chmod -R 0600 ~/.ssh/
     - git fetch --tags && ./check-version.sh && ./create-tags.sh
-    - git push --tags https://${GITLAB_USER_LOGIN}:${PERSONAL_ACCESS_TOKEN}@git.yrzr.ocry.com/docker/go-ipfs-arm.git
+    - git push --tags https://${GITLAB_USER_LOGIN}:${PERSONAL_ACCESS_TOKEN}@git.yrzr.ocry.com/docker/go-ipfs-armhf.git
 
 .build_stage: &build_stage
   stage: build
@@ -74,6 +74,6 @@ mirror:
     - echo "$GITHUB_SSH_KEY" > ~/.ssh/id_rsa
     - ssh-keyscan -H github.com > ~/.ssh/known_hosts
     - chmod -R 0600 ~/.ssh/
-    - git remote | grep github || git remote add github git@github.com:yrzr/go-ipfs-arm.git
+    - git remote | grep github || git remote add github git@github.com:yrzr/go-ipfs-armhf.git
     - git fetch github
     - git push github "$CI_BUILD_REF_NAME" -f
