@@ -28,7 +28,7 @@ check:
   script:
     # setup dockerd
     - /usr/local/bin/dockerd-entrypoint.sh &
-    - apk add --no-cache bash coreutils
+    - apk add --no-cache bash coreutils git
     - docker info || sleep 5 && docker info
     # fetch dockerfile
     - git clone -b ${CI_COMMIT_TAG} --depth=1 https://github.com/ipfs/go-ipfs.git
@@ -56,7 +56,7 @@ build-armv7:
 
 build-armv8:
   <<: *build_stage
-  image: arm64v8/docker:stable-dind-git
+  image: arm64v8/docker:stable-dind
   tags:
     - aarch64
     - docker
