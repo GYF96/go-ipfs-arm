@@ -31,8 +31,9 @@ check:
     - git clone -b ${CI_COMMIT_TAG} --depth=1 https://github.com/ipfs/go-ipfs.git
     - cd ./go-ipfs
     # build
-    - sed -i "s/golang\:/${BASE_NS}\/golang\:/" ./Dockerfile && sed -i "s/busybox\:/${BASE_NS}\/busybox\:/" ./Dockerfile && sed -i 's/x86_64-linux-gnu/arm-linux-gnueabihf/' ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
-    - docker build -q -t ${DOCKER_NS}/${BASENAME}:${CI_COMMIT_TAG} -f ./Dockerfile ./
+    - sed -i "s/golang\:/${ARMVER}\/golang\:/" ./Dockerfile && sed -i "s/busybox\:/${ARMVER}\/busybox\:/" ./Dockerfile && sed -i "s/x86_64-linux-gnu/${CHOST}/" ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
+    - ([ -z "${BUILD_GX}" ] || git apply ${CI_PROJECT_DIR}/0001-install-gx-from-source-instead-of-pre-build-package.patch)
+    - docker build -t ${DOCKER_NS}/${BASENAME}-${ARMVER}:${CI_COMMIT_TAG} -f ./Dockerfile ./
     # latest tag
     - cd ../ && git fetch --tags && ./latest-tag.sh
     # docker push
@@ -47,19 +48,20 @@ build-armv7:
     - docker
   variables:
     ARCH_NAME: armhf
-    BASE_NS: arm32v7
-    BASENAME: go-ipfs-arm32v7
+    CHOST: arm-linux-gnueabihf
+    ARMVER: arm32v7
 
-# build-armv8:
-#   <<: *build_stage
-#   image: arm64v8/docker:stable-dind-git
-#   tags:
-#     - aarch64
-#     - docker
-#   variables:
-#     ARCH_NAME: arm64
-#     BASE_NS: arm64v8
-#     BASENAME: go-ipfs-arm64v8
+build-armv8:
+  <<: *build_stage
+  image: arm64v8/docker:stable-dind-git
+  tags:
+    - aarch64
+    - docker
+  variables:
+    ARCH_NAME: arm64
+    CHOST: aarch64-linux-gnu
+    ARMVER: arm64v8
+    BUILD_GX: build
 
 mirror:
   image: yrzr/docker-arm32v7:stable-git
