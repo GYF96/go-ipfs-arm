@@ -35,7 +35,6 @@ check:
     - cd ./go-ipfs
     # build
     - sed -i "s/golang\:/${ARMVER}\/golang\:/" ./Dockerfile && sed -i "s/busybox\:/${ARMVER}\/busybox\:/" ./Dockerfile && sed -i "s/x86_64-linux-gnu/${CHOST}/" ./Dockerfile && sed -i "s/VERSION\/tini/VERSION\/tini-${ARCH_NAME}/" ./Dockerfile
-    - ([ -z "${BUILD_GX}" ] || git apply ${CI_PROJECT_DIR}/0001-install-gx-from-source-instead-of-pre-build-package.patch)
     - docker build -t ${DOCKER_NS}/${BASENAME}-${ARMVER}:${CI_COMMIT_TAG} -f ./Dockerfile ./
     # latest tag
     - cd ../ && git fetch --tags && ./latest-tag.sh
@@ -64,7 +63,6 @@ build-armv8:
     ARCH_NAME: arm64
     CHOST: aarch64-linux-gnu
     ARMVER: arm64v8
-    BUILD_GX: build
 
 mirror:
   image: yrzr/docker-arm32v7:stable-git
