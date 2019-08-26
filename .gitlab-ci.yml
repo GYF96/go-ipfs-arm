@@ -41,7 +41,7 @@ check:
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD 
     - docker images && docker push ${DOCKER_NS}/${BASENAME}-${ARMVER}
 
-build-armv7:
+build-arm32v7:
   <<: *build_stage
   image: arm32v7/docker:stable-git
   services:
@@ -55,9 +55,9 @@ build-armv7:
     CHOST: arm-linux-gnueabihf
     ARMVER: arm32v7
 
-build-armv8:
+build-arm64v8:
   <<: *build_stage
-  image: arm64v8/docker:stable-dind
+  image: arm64v8/docker:stable-git
   services:
     - name: arm64v8/docker:stable-dind
       alias: docker
