@@ -81,7 +81,7 @@ mirror:
     - echo "$GITHUB_SSH_KEY" > ~/.ssh/id_rsa
     - ssh-keyscan -H github.com > ~/.ssh/known_hosts
     - chmod -R 0600 ~/.ssh/
-    - git remote | grep github || git remote add github git@github.com:yrzr/go-ipfs-armhf.git
+    - git remote | grep github || git remote add github git@github.com:yrzr/go-ipfs-arm.git
     - git fetch github
     - git checkout -t -b master origin/master
     - git push github
