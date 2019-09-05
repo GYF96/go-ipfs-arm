@@ -83,5 +83,5 @@ mirror:
     - chmod -R 0600 ~/.ssh/
     - git remote | grep github || git remote add github git@github.com:yrzr/go-ipfs-arm.git
     - git fetch github
-    - git checkout -t -b master origin/master
-    - git push github
+    - git checkout -t -b master origin/master || git checkout master
+    - git push github master -f
