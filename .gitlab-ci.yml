@@ -1,5 +1,6 @@
 variables:
   BASENAME: go-ipfs
+  DOCKER_TLS_CERTDIR: ""
 
 stages:
   - check
